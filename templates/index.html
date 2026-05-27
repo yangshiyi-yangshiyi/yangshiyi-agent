@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ConsumerMind AI</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- 左侧消费者画像 -->
+    <div class="card sidebar">
+
+        <h2>消费者画像</h2>
+
+        <p>👩 28岁女性</p>
+        <p>🏙 二线城市</p>
+        <p>💰 月收入8000</p>
+        <p>💄 高频护肤消费者</p>
+        <p>📱 常刷小红书</p>
+        <p>🛍 注重性价比</p>
+
+    </div>
+
+    <!-- 右侧主内容 -->
+    <div class="card main-content">
+
+        <h1>AI消费者调研平台</h1>
+
+        <textarea
+                id="question"
+                placeholder="请输入调研问题..."
+        ></textarea>
+
+        <button onclick="askQuestion()">
+            开始调研
+        </button>
+
+        <div id="answer"></div>
+
+    </div>
+
+</div>
+
+<script>
+
+async function askQuestion() {
+
+    // 获取输入内容
+    const question =
+        document.getElementById("question").value;
+
+    // 获取或创建 session_id
+    let session_id =
+        localStorage.getItem("session_id");
+
+    if (!session_id) {
+
+        session_id = crypto.randomUUID();
+
+        localStorage.setItem(
+            "session_id",
+            session_id
+        );
+    }
+
+    // 调用后端接口
+    const response = await fetch("/ask", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+
+            question: question,
+
+            session_id: session_id
+        })
+    });
+
+    // 获取返回数据
+    const data = await response.json();
+
+    // 显示回答
+    document.getElementById("answer").innerHTML =
+        data.answer;
+}
+
+</script>
+
+</body>
+</html>
